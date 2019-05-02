@@ -1,1 +1,1 @@
-# Monte-Carlo-simulation-for-sliding-and-hoppign-of-a-transcription-factor
+# Monte-Carlo-simulation-for-sliding-and-hopping-of-a-transcription-factor
