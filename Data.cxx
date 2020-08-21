@@ -52,7 +52,7 @@ Data::Data(const Data &source): TObject(source),
 		ftitolo = new char[ftitlelength];
 		for(i=0;i<ftitlelength;i++) ftitolo[i]=source.ftitolo[i];
 	  	fcontainer = new vector <int>[fnrange];
-	  	fhist2 = new TH1D* [fnrange];
+	  	fhist = new TH1D* [fnrange];
 	  	fnome2 = new char[fnamelength2];
 		for(i=0;i<fnamelength2;i++) fnome2[i]=source.fnome2[i];
 		ftitolo2 = new char[ftitlelength2];
@@ -77,14 +77,14 @@ Data::~Data() {
 			
 			if (fcontainer[i].size()>0){    
 				if(fflag){
-				if (fDebug) cout << "sto distruggendo l'istogramma numero "<<i<<endl; 
+				//if (fDebug) cout << "sto distruggendo l'istogramma numero "<<i<<endl; 
 				delete fhist[i];
 				}
 
 			}
 			if (fcontainer2[i].size()>0){   
 				if(fflag2){
-				if (fDebug) cout << "sto distruggendo l'istogramma degli angoli numero "<<i<<endl; 
+				//if (fDebug) cout << "sto distruggendo l'istogramma degli angoli numero "<<i<<endl; 
 				delete fhist2[i];
 				}
 			}
