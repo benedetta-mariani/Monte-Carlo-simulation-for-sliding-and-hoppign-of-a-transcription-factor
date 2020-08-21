@@ -35,7 +35,7 @@ TFactor::TFactor(TRandom* poi):
 
 	if (fPositionOperator + fDistanza > fN){
 		if (fPositionOperator - fDistanza > 0) fPositionOperator2 = fPositionOperator - fDistanza;
-		else cout<<"Distanza troppo grande"<<endl;
+		else cout<<"Distanza troppo grande, non posso cambiare la distanza"<<endl;
 	}
 	else if (fPositionOperator + fDistanza < fN && fPositionOperator - fDistanza < 0) fPositionOperator2 = fPositionOperator + fDistanza;
 	
@@ -56,7 +56,7 @@ TFactor::TFactor(TRandom* poi):
 
 TFactor::TFactor(double rmin, double rmax, double rstart, int N, TRandom* poi): 
 	fN(N), 
-	fs2(700), 
+	fs2(20), //700
 	fM(0), 
 	fPosition(0),
 	fp(1), 
@@ -186,7 +186,7 @@ int TFactor::Move(TRandom* poi) {
 		
 	else if( x > 2* fs2p && x <= 1) {
 		if (fDebug) cout << "Now the TF tries to hop" << endl;
-		double r = Selectr(poi);
+		//double r = Selectr(poi);
 		return 4;
 	}
 	return 5;
@@ -232,14 +232,14 @@ int TFactor::Hopping (double r, int n , TRandom* poi, double angle) {
 			}
 			else {
 				if (fDebug) cout <<"new hopping" << endl;
-				double r = Selectr(poi);
+				//double r = Selectr(poi);
 				return 4;
 			}
 		}
 
 		else { 
 			if (fDebug) cout << "This value of r is not valid" << endl;
-			double r = Selectr(poi);
+			//double r = Selectr(poi);
 			return 4;
 		}
 	}

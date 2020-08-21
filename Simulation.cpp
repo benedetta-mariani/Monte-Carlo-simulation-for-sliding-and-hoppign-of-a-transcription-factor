@@ -20,7 +20,7 @@
 using namespace std;
 
 
-void simulation(unsigned int seed = 123) {
+void simulation(int searches, unsigned int seed = 123) {
 
 	Bool_t debug = kFALSE;
 	Bool_t debugg= kFALSE;
@@ -29,7 +29,7 @@ void simulation(unsigned int seed = 123) {
     const double rmax = 11;
     const double rstart = 6.5;
     const double rstep = rstart - rmin;
-    const int searches =1000;
+    //const int searches =300;
 
 
     vector <double> distanze; //vector in cui salvare provvisoriamente le distanze raggiunte dal Random Walker durante un RW    
@@ -42,7 +42,7 @@ void simulation(unsigned int seed = 123) {
     
 	RandomWalker rwalker;
     Data dati (rmin, rstep, rmax);
-	const int walks=100000; 
+	const int walks=100000; //numero di random walk che si fanno per ottenere la distribuzione di probabilità degli n
 	const long int maxsearches = 100000000000000;
  
 	for (l=0; l<walks; l++){
@@ -52,7 +52,7 @@ void simulation(unsigned int seed = 123) {
 		double r = rstart;
 		int m = 0;
 		distanze.push_back(r);
-		if (debug) cout<< "il Random Walker è a distanza "<< r << endl;
+		//if (debug) cout<< "il Random Walker è a distanza "<< r << endl;
 		while (  r > rmin ) {  
 			rwalker.RandomWalk(rstep, punta);
 			r = rwalker.Distanza();
@@ -62,7 +62,7 @@ void simulation(unsigned int seed = 123) {
 				break;
 				}
 			distanze.push_back(r);
-			if (debug) cout<< "il Random Walker è a distanza "<< r << endl;
+			//if (debug) cout<< "il Random Walker è a distanza "<< r << endl;
 			nstep = nstep + 1;
 
 		}
@@ -70,7 +70,7 @@ void simulation(unsigned int seed = 123) {
 		double angle = rwalker.Angolo();
 		if (nstep != 0) { 
 			for(i = 0; i <=nstep; i++) {
-				if (debug) cout << distanze[i] <<","<<rmin <<"," <<rstep<<endl;
+				//if (debug) cout << distanze[i] <<","<<rmin <<"," <<rstep<<endl;
 				dati.Add(distanze[i], nstep);
 				dati.AddAngles(distanze[i], angle, nstep);
 			}
@@ -108,7 +108,7 @@ void simulation(unsigned int seed = 123) {
 		
 	}
 	
-	cout << "numero di ricerche con legame al sito: " << j << endl;
+	cout << "numero di ricerche con legame al sito " << j << endl;
 	if (j < searches) cout << "maxsearches è troppo piccolo" << endl;
 	double MeanOneOp = sum/j;
 	cout << "numero medio di dissociazioni macroscopiche nel caso di un singolo operatore= " << MeanOneOp << endl; 
@@ -159,7 +159,7 @@ void simulation(unsigned int seed = 123) {
 		cout << MeanTwoOp << endl; 
 		medie[l] = MeanTwoOp;
 		
-		for ( i = 0; i < searches; i ++){
+		for ( i = 0; i < j; i ++){
 			errors[l] += pow((MTwoOp[i] - MeanTwoOp),2)/(j -1);
 			
 		}
@@ -173,7 +173,7 @@ void simulation(unsigned int seed = 123) {
 
 	for (i = 0; i < n; i ++){
 		rates[i] = MeanOneOp/medie[i];
-		printf("il valore del rapporto tra i rate con rmax =  %2.f sono: ", rmax);
+		printf("i valori dei rate con rmax =  %2.f sono: ", rmax);
 		cout << rates[i] << endl;
 		errorirates[i] = TMath::Sqrt(pow((1/medie[i])* varianceOne,2)  + pow((MeanOneOp/pow(medie[i],2))*errors[i],2));
 	}
