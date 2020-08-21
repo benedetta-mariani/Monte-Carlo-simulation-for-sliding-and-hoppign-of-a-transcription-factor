@@ -10,6 +10,6 @@ root -l
 compilemyclass();
 simulation(1000);
 ```
-where here the parameter ```searches``` is set to 1000 (number of independent searches of the binding site one wants to perform, in order to obtain average values). When ```searches``` is set to 1000, good agreement with the experimental expectations starts to appear (ten minutes of execution time). However the results presented in the pdf are obtained with ```searches = 10**5```, which requires a nine hours long execution.
+where here the parameter ```searches``` is set to 1000 (number of independent searches of the binding site one wants to perform, in order to obtain average values). When ```searches``` is set to 1000, good agreement with the experimental expectations starts to appear (ten minutes of execution time). However the results presented in the pdf are obtained with searches = 10<sup>5</sup>, which requires a nine hours long execution.
 
 The parameters in the simulations are set to some suggested in the paper, since they fit experimental data: these values of parameters (s<sup>2</sup> = 700) imply that hopping has very low probability to happen, and sliding together with macroscopic dissociations seems to play major contributions in the search of the site. 
