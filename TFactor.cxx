@@ -56,7 +56,7 @@ TFactor::TFactor(TRandom* poi):
 
 TFactor::TFactor(double rmin, double rmax, double rstart, int N, TRandom* poi): 
 	fN(N), 
-	fs2(20), //700
+	fs2(700), 
 	fM(0), 
 	fPosition(0),
 	fp(1), 
