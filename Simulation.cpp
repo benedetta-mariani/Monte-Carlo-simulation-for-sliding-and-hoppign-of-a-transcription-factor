@@ -26,22 +26,22 @@ void simulation(int searches, unsigned int seed = 123) {
 	Bool_t debugg= kFALSE;
 	
 	const double rmin = 5.5; 
-    const double rmax = 11;
-    const double rstart = 6.5;
-    const double rstep = rstart - rmin;
-    //const int searches =300;
+    	const double rmax = 11;
+    	const double rstart = 6.5;
+    	const double rstep = rstart - rmin;
+    	//const int searches =300;
 
 
-    vector <double> distanze; //vector in cui salvare provvisoriamente le distanze raggiunte dal Random Walker durante un RW    
+    	vector <double> distanze; //vector in cui salvare provvisoriamente le distanze raggiunte dal Random Walker durante un RW    
 	int j, l; 
 	long int i;
 	
 	
 	gRandom->SetSeed(seed); 
-    TRandom* punta = gRandom;
+    	TRandom* punta = gRandom;
     
 	RandomWalker rwalker;
-    Data dati (rmin, rstep, rmax);
+    	Data dati (rmin, rstep, rmax);
 	const int walks=100000; //numero di random walk che si fanno per ottenere la distribuzione di probabilità degli n
 	const long int maxsearches = 100000000000000;
  
