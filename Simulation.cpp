@@ -26,23 +26,22 @@ void simulation(int searches, unsigned int seed = 123) {
 	Bool_t debugg= kFALSE;
 	
 	const double rmin = 5.5; 
-    	const double rmax = 11;
-    	const double rstart = 6.5;
-    	const double rstep = rstart - rmin;
-    	//const int searches =300;
+    const double rmax = 11;
+    const double rstart = 6.5;
+    const double rstep = rstart - rmin;
+   
 
-
-    	vector <double> distanze; //vector in cui salvare provvisoriamente le distanze raggiunte dal Random Walker durante un RW    
+    vector <double> distanze; 
 	int j, l; 
 	long int i;
 	
 	
 	gRandom->SetSeed(seed); 
-    	TRandom* punta = gRandom;
+    TRandom* punta = gRandom;
     
 	RandomWalker rwalker;
-    	Data dati (rmin, rstep, rmax);
-	const int walks=100000; //numero di random walk che si fanno per ottenere la distribuzione di probabilità degli n
+    Data dati (rmin, rstep, rmax);
+	const int walks=100000; 
 	const long int maxsearches = 100000000000000;
  
 	for (l=0; l<walks; l++){
@@ -52,17 +51,16 @@ void simulation(int searches, unsigned int seed = 123) {
 		double r = rstart;
 		int m = 0;
 		distanze.push_back(r);
-		//if (debug) cout<< "il Random Walker è a distanza "<< r << endl;
+		
 		while (  r > rmin ) {  
 			rwalker.RandomWalk(rstep, punta);
 			r = rwalker.Distanza();
 			if (r > rmax){
 				nstep = 0;
-				if (debug) cout << "il Random Walk " << l << "-esimo è terminato anzitempo perché il Random Walker ha superato rmax" << endl; 
+				if (debug) cout << "The "<< l << "-th Random Walk has finished because the Random Walker has overcome rmax" << endl; 
 				break;
 				}
 			distanze.push_back(r);
-			//if (debug) cout<< "il Random Walker è a distanza "<< r << endl;
 			nstep = nstep + 1;
 
 		}
@@ -70,7 +68,6 @@ void simulation(int searches, unsigned int seed = 123) {
 		double angle = rwalker.Angolo();
 		if (nstep != 0) { 
 			for(i = 0; i <=nstep; i++) {
-				//if (debug) cout << distanze[i] <<","<<rmin <<"," <<rstep<<endl;
 				dati.Add(distanze[i], nstep);
 				dati.AddAngles(distanze[i], angle, nstep);
 			}
@@ -82,7 +79,7 @@ void simulation(int searches, unsigned int seed = 123) {
 	if (debugg) dati.ShowHistos();	
 	if (debugg) dati.ShowHistosAngles();	
 
-	//caso di un singolo operatore. 
+	//One Operator
 	
 	TFactor TF (rmin, rmax, rstart, 20000, punta); 
 	
@@ -90,8 +87,6 @@ void simulation(int searches, unsigned int seed = 123) {
 	long double sum = 0;
 	double MOneOp[searches];
 	for (i = 0, j = 0; i < maxsearches && j < searches; i++){
-		
-		
 		
 		TF.SetPositionOperator(punta);
 		
@@ -108,10 +103,10 @@ void simulation(int searches, unsigned int seed = 123) {
 		
 	}
 	
-	cout << "numero di ricerche con legame al sito " << j << endl;
-	if (j < searches) cout << "maxsearches è troppo piccolo" << endl;
+	cout << "Number of searches with binding to the site: " << j << endl;
+	if (j < searches) cout << "maxsearches is too small" << endl;
 	double MeanOneOp = sum/j;
-	cout << "numero medio di dissociazioni macroscopiche nel caso di un singolo operatore= " << MeanOneOp << endl; 
+	cout << "Average value of macroscopic dissociations with one operator: " << MeanOneOp << endl; 
 
 	double varianceOne = 0;
 	
@@ -120,18 +115,19 @@ void simulation(int searches, unsigned int seed = 123) {
 	}
 	varianceOne = TMath::Sqrt(varianceOne/j); 
 	
-	//caso di due operatori
+	//Two Operator
 	
-	double DistTraOp[] = {10,20,30,40,50,60,80,100,120,140,160,180,200}; 
+	double DistTraOp[] = {0, 10,20,30,40,50,60,80,100,120,140,160,180,200}; 
 	
 	int n = sizeof(DistTraOp)/sizeof(DistTraOp[0]);
 	double errors[n];
 	for (i=0; i<n; i++) errors[i]=0;
 
 	double medie[n];
+	medie[0] = MeanOneOp;
 	double MTwoOp[searches];
 
-	for (l = 0; l < n; l ++){
+	for (l = 1; l < n; l ++){
 		
 		TF.ChangeDistanza(DistTraOp[l]);
 		
@@ -148,14 +144,12 @@ void simulation(int searches, unsigned int seed = 123) {
 				MTwoOp[j] = c;
 				j++;
 			}
-
-		
-
 		} 
-		cout << "numero di ricerche con legame al sito: " << j << endl;
-		if (j < searches) cout << "maxsearches è troppo piccolo" << endl;
+
+		cout << "Number of searches with binding to the site: " << j << endl;
+		if (j < searches) cout << "maxsearches is too small" << endl;
 		double MeanTwoOp = sum2/j;
-		printf("numero medio di dissociazioni macroscopiche nel caso di una distanza di %3.f bp tra i due operatori= ", DistTraOp[l]);
+		printf("Average value of macroscopic dissociations with a distance of %3.f bp between operators: ", DistTraOp[l]);
 		cout << MeanTwoOp << endl; 
 		medie[l] = MeanTwoOp;
 		
@@ -167,21 +161,24 @@ void simulation(int searches, unsigned int seed = 123) {
 	
 		
 	} 
+	errors[0] = varianceOne; 
 
 	double rates[n];
 	double errorirates[n];
 
 	for (i = 0; i < n; i ++){
 		rates[i] = MeanOneOp/medie[i];
-		printf("i valori dei rate con rmax =  %2.f sono: ", rmax);
+		printf("The ratio of association rates (k/k0) with rmax =  %2.f nm and distance between operators = %3.f bp is: ", rmax, DistTraOp[i]);
 		cout << rates[i] << endl;
 		errorirates[i] = TMath::Sqrt(pow((1/medie[i])* varianceOne,2)  + pow((MeanOneOp/pow(medie[i],2))*errors[i],2));
 	}
 
+	
    	TCanvas *c1 = new TCanvas("c1", "c1", 700, 500);
    	TGraphErrors *gr  = new TGraphErrors(n,DistTraOp,rates, 0, errorirates);
    	gr->SetTitle("");
    	gr->GetXaxis()->SetTitle("distance between operators [bp]");
+   	gr->GetXaxis()->SetLimits(-5,DistTraOp[n-1]+10);    
    	gr->GetYaxis()->SetTitle("ratio of association rates (k/k0)");
    	gr->Draw("A*");
 	

@@ -94,15 +94,15 @@ double RandomWalker::Distanza() {
 double RandomWalker::Angolo() {
 	
 	double angolo1 = TMath::ATan2(fy,fx);
-	double angolo2 = TMath::ATan2(fyy,fxx);
+	double angolo2 = TMath::ATan2(fyy,fxx); // approximation
 	double angolo = (angolo1 + angolo2)/2;
 	angolo = angolo*180/TMath::Pi();
-	return angolo;
+	return angolo; // angle in degrees! 
 }
 
 
 
 void RandomWalker::Stampaposizione(){
-	cout << "la posizione del RandomWalker e' " << fx <<","<< fy << " e " << fxx << "," << fyy << endl;
+	cout << "The position of the Random Walker is " << fx <<","<< fy << " e " << fxx << "," << fyy << endl;
 }
 

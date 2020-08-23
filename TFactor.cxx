@@ -35,7 +35,7 @@ TFactor::TFactor(TRandom* poi):
 
 	if (fPositionOperator + fDistanza > fN){
 		if (fPositionOperator - fDistanza > 0) fPositionOperator2 = fPositionOperator - fDistanza;
-		else cout<<"Distanza troppo grande, non posso cambiare la distanza"<<endl;
+		else cout<<"The distance is too large"<<endl;
 	}
 	else if (fPositionOperator + fDistanza < fN && fPositionOperator - fDistanza < 0) fPositionOperator2 = fPositionOperator + fDistanza;
 	
@@ -76,7 +76,7 @@ TFactor::TFactor(double rmin, double rmax, double rstart, int N, TRandom* poi):
 
 	if (fPositionOperator + fDistanza > fN){
 		if (fPositionOperator - fDistanza > 0) fPositionOperator2 = fPositionOperator - fDistanza;
-		else cout<<"Distanza troppo grande"<<endl;
+		else cout<<"The distance is too large"<<endl;
 	}
 	else if (fPositionOperator + fDistanza < fN && fPositionOperator - fDistanza < 0) fPositionOperator2 = fPositionOperator + fDistanza;
 	
@@ -185,8 +185,8 @@ int TFactor::Move(TRandom* poi) {
 		
 		
 	else if( x > 2* fs2p && x <= 1) {
+
 		if (fDebug) cout << "Now the TF tries to hop" << endl;
-		//double r = Selectr(poi);
 		return 4;
 	}
 	return 5;
@@ -205,12 +205,14 @@ int TFactor::Hopping (double r, int n , TRandom* poi, double angle) {
 		    if (fDebug) cout << "Now the TF hops" << endl;
 			f1->SetParameters(n,n);
 			double z = f1 -> GetRandom();
-			if (TMath::Abs(z) >= 23){
+			if (TMath::Abs(z) >= 23){ //23 nm = zmax
 				fM = fM + 1;
 				return 1;
-			}
-			int jump = int(z /0.33); // conversione da z a numero di basi azotate
-			double angolovecchio = fPosition*36%360;
+			} 
+			
+
+			int jump = int(z /0.33); // conversion from nm to base pairs units
+			double angolovecchio = fPosition*36%360; // 36 degrees: angle between two consecutive base pairs
 			fPosition = fPosition + jump;
 			if (fDebug) cout << "The position after hopping is " << fPosition << endl;
 			if (fPosition > fN) fPosition = fN;
@@ -219,11 +221,11 @@ int TFactor::Hopping (double r, int n , TRandom* poi, double angle) {
 			int angolonuovo = (int)(angolovecchio + angle)%360;
 			double x = poi -> Rndm();
 			bool ang = kFALSE;
-			if(angolonuovo <= angoloDna + fTolleranza/2 && angolonuovo >= angoloDna - fTolleranza/2) ang = kTRUE;
+			if(angolonuovo <= angoloDna + fTolleranza/2 && angolonuovo >= angoloDna - fTolleranza/2) ang = kTRUE; //check if the angle follow the helix
 			if (x <= fp && ang ) { 
 				if (fDebug) cout <<"The TF binds with the DNA" << endl;
 				if (fPosition == fPositionOperator || fPosition == fPositionOperator2) {
-					if (fDebug) cout << "specific binding of the TF on its binding site"<< endl;
+					if (fDebug) cout << "specific binding of the TF on its binding site after hopping"<< endl;
 					if (fDebug) cout << "The value of M is " << fM << endl;
 					return 2;
 					
@@ -232,14 +234,12 @@ int TFactor::Hopping (double r, int n , TRandom* poi, double angle) {
 			}
 			else {
 				if (fDebug) cout <<"new hopping" << endl;
-				//double r = Selectr(poi);
 				return 4;
 			}
 		}
 
 		else { 
 			if (fDebug) cout << "This value of r is not valid" << endl;
-			//double r = Selectr(poi);
 			return 4;
 		}
 	}
@@ -272,14 +272,14 @@ int TFactor::Search(TRandom* poi, Data& p){
 			}
 			break;
 
-			case 5: cout << "Nessuna delle condizioni poste è valida " << endl;
+			case 5: cout << "No previous condition is valid " << endl;
 			break;
 		}
 		i++;
 	}
 	if (b == 2)	return fM; 		
 	else {
-		if (fDebug) cout << "Il loop è terminato senza che il TFactor abbia raggiunto il sito di legame. " << endl;
+		if (fDebug) cout << "The loop ended befor the TFactor reached its binding site " << endl;
 		return 0;
 		} 
 }	
@@ -292,7 +292,7 @@ void TFactor::ChangeTolleranza(double tolleranza) {
 
 void TFactor::ChangeDistanza(double distanza) {
 	fDistanza = distanza;
-	if (fDebug) cout << "la distanza ora vale " << fDistanza << endl;
+	if (fDebug) cout << "The distance now is " << fDistanza << endl;
 } 
 
 
@@ -302,7 +302,7 @@ void TFactor::SetPositionOperator(TRandom* poi){
 
 	if (fPositionOperator + fDistanza > fN){
 		if (fPositionOperator - fDistanza > 0) fPositionOperator2 = fPositionOperator - fDistanza;
-		else cout<<"Distanza troppo grande"<<endl;
+		else cout<<"The distance is too large"<<endl;
 	}
 	else if (fPositionOperator + fDistanza < fN && fPositionOperator - fDistanza < 0) fPositionOperator2 = fPositionOperator + fDistanza;
 	

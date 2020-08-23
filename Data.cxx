@@ -77,14 +77,12 @@ Data::~Data() {
 			
 			if (fcontainer[i].size()>0){    
 				if(fflag){
-				//if (fDebug) cout << "sto distruggendo l'istogramma numero "<<i<<endl; 
 				delete fhist[i];
 				}
 
 			}
 			if (fcontainer2[i].size()>0){   
 				if(fflag2){
-				//if (fDebug) cout << "sto distruggendo l'istogramma degli angoli numero "<<i<<endl; 
 				delete fhist2[i];
 				}
 			}
@@ -112,7 +110,7 @@ void Data::Add (double dist, int nstep){
 		fcontainer[m].push_back(nstep);
 		
 	}
-	else if (nstep != 0 && dist > frmax) cout << "distanza troppo grande per essere raggiunta dal Random Walker"<< endl;
+	else if (nstep != 0 && dist > frmax) cout << "The distance is too large and can't be reached by the Random Walker"<< endl;
 }
 
 
@@ -125,18 +123,18 @@ void Data::AddAngles (double dist, double angle, int nstep){
 		
 		
 	}
-	else if (nstep != 0 && dist > frmax) cout << "distanza troppo grande per essere raggiunta dal Random Walker"<< endl;
+	else if (nstep != 0 && dist > frmax) cout << "The distance is too large and can't be reached by the Random Walker" << endl;
 }
 
 
 void Data::Stampa(){
 	for (int i=0;i<fnrange;i++){
-	cout<<"sto stampando il vettore numero"<<i<<endl;
+	cout<<"I'm printing the vector number "<<i<<endl;
 		for (unsigned int j=0; j<fcontainer[i].size(); j++){
 			cout << fcontainer[i][j]<< ","<< endl;
 			
 		}
-		if (fcontainer[i].size()>0)cout <<"il massimo è: " << *max_element(fcontainer[i].begin(), fcontainer[i].end())<<endl;
+		if (fcontainer[i].size()>0)cout <<"The max is: " << *max_element(fcontainer[i].begin(), fcontainer[i].end())<<endl;
 	}
 }
 
@@ -144,7 +142,7 @@ void Data::Histos(){
 	fflag=1;
 	for (int i=0; i<fnrange; i++) {
 		sprintf(fnome,"h%d",i);
-		sprintf(ftitolo,"numero di passi delle traiettorie che passano per le distanze del contenitore %d-esimo",i);
+		sprintf(ftitolo,"Number of steps of the trajectories that cross the distances of the %d-th container",i);
 		if (fcontainer[i].size()>0){
 			int x1 = *max_element(fcontainer[i].begin(), fcontainer[i].end());			
 			fhist[i] = new TH1D(fnome,ftitolo, x1 + 1, 1, x1 + 2);	
@@ -183,7 +181,7 @@ void Data::HistosAngles(){
 	fflag2=1;
 	for (int i=0; i<fnrange; i++) {
 		sprintf(fnome2,"ha%d",i);
-		sprintf(ftitolo2,"angoli di rebinding delle traiettorie che passano per le distanze del contenitore %d-esimo",i);
+		sprintf(ftitolo2,"Rebinding angles of the trajectories that cross the distances of the %d-th container", i);
 		if (fcontainer2[i].size()>0){
 			int x1 = *max_element(fcontainer2[i].begin(), fcontainer2[i].end());
 			int x2 = *min_element(fcontainer2[i].begin(), fcontainer2[i].end());			
@@ -227,7 +225,7 @@ int Data::Casual(double r){
 		return (int) fhist[m] -> GetRandom();
 	} 
 	else {
-		cout << "valore di r che non ha un istogramma relativo al numero di passi" << endl; 
+		cout << "There isn't a histogram of the number of steps for this value of r" << endl; 
 		return 0;
 	}
 	
@@ -242,7 +240,7 @@ int Data::CasualAngles(double r){
 		return (int) fhist2[m] -> GetRandom();
 	} 
 	else {
-		cout << "valore di r che non ha un istogramma relativo agli angoli" << endl;
+		cout << "There isn't a histogram of the number of steps for this value of r" << endl;
 		return 0;
 	}
 	
