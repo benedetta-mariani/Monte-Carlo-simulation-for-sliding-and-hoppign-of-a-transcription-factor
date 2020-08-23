@@ -21,6 +21,7 @@ using namespace std;
 
 
 void simulation(int searches, unsigned int seed = 123) {
+	
 
 	Bool_t debug = kFALSE;
 	Bool_t debugg= kFALSE;
@@ -115,7 +116,7 @@ void simulation(int searches, unsigned int seed = 123) {
 	}
 	varianceOne = TMath::Sqrt(varianceOne/j); 
 	
-	//Two Operator
+	//Two Operators
 	
 	double DistTraOp[] = {0, 10,20,30,40,50,60,80,100,120,140,160,180,200}; 
 	
