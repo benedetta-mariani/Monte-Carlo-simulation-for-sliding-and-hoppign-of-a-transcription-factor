@@ -8,7 +8,7 @@
 class Data : public TObject{
 
 	public:
-  		Data(double rmin, double rstep, double rmax);
+  		Data(double rmin, double rstart, double rmax);
   		Data(const Data& source);
   		virtual ~Data();
   		void Add (double dist, int nstep);
@@ -25,6 +25,7 @@ class Data : public TObject{
 		bool fDebug;
 		double frmax;
 		double frmin;
+		double frstart;
 		double frstep;
 		int fnrange;
 		vector <int> *fcontainer;//[fnrange]

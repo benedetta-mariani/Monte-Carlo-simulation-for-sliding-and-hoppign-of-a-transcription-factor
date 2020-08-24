@@ -3,8 +3,11 @@
 #include <TRandom3.h>
 #include <TRandom.h>
 #include <TMath.h>
+#include <vector>
 #include <TF1.h>
 #include <string>
+#include <TFile.h>
+#include <TCanvas.h>
 #include "TFactor.h"
 #include "Data.h"
 
@@ -51,12 +54,13 @@ TFactor::TFactor(TRandom* poi):
 	sprintf(funzione, "1/TMath::Sqrt(TMath::Pi()*[0]*pow(%f,2))*TMath::Exp(-pow(x,2)/([1]*pow(%f,2)))",frstep,frstep);
 			
 	f1 = new TF1("myfunc",funzione,-400,400);
+	jumps =  new TH1D("s","jumps",2000,-1000,-1000);	
 }
 
 
-TFactor::TFactor(double rmin, double rmax, double rstart, int N, TRandom* poi): 
+TFactor::TFactor(double rmin, double rstart, double rmax, int N, TRandom* poi, double s2): 
 	fN(N), 
-	fs2(700), 
+	fs2(s2), 
 	fM(0), 
 	fPosition(0),
 	fp(1), 
@@ -91,6 +95,8 @@ TFactor::TFactor(double rmin, double rmax, double rstart, int N, TRandom* poi):
 	sprintf(funzione, "1/TMath::Sqrt(TMath::Pi()*[0]*pow(%f,2))*TMath::Exp(-pow(x,2)/([1]*pow(%f,2)))",frstep,frstep);
 			
 	f1 = new TF1("myfunc",funzione,-400,400);
+	jumps =  new TH1D("s","jumps",400,-200,200);	
+
 }
 
 
@@ -111,13 +117,16 @@ TFactor::TFactor (const TFactor &source):
 	fTolleranza(source.fTolleranza),
 	fDistanza(source.fDistanza),
 	fPositionOperator2(source.fPositionOperator2),
-	f1(source.f1)
+	f1(source.f1),
+	jumps(source.jumps)
+
 {
 }
 
 
 TFactor::~TFactor(){
 	delete f1; 
+	delete jumps;
 	cout<<"DESTRUCTOR OF CLASS TFACTOR - this = "<<this<<endl;
 }
 
@@ -205,12 +214,12 @@ int TFactor::Hopping (double r, int n , TRandom* poi, double angle) {
 		    if (fDebug) cout << "Now the TF hops" << endl;
 			f1->SetParameters(n,n);
 			double z = f1 -> GetRandom();
+
 			if (TMath::Abs(z) >= 23){ //23 nm = zmax
 				fM = fM + 1;
 				return 1;
 			} 
-			
-
+	
 			int jump = int(z /0.33); // conversion from nm to base pairs units
 			double angolovecchio = fPosition*36%360; // 36 degrees: angle between two consecutive base pairs
 			fPosition = fPosition + jump;
@@ -223,6 +232,7 @@ int TFactor::Hopping (double r, int n , TRandom* poi, double angle) {
 			bool ang = kFALSE;
 			if(angolonuovo <= angoloDna + fTolleranza/2 && angolonuovo >= angoloDna - fTolleranza/2) ang = kTRUE; //check if the angle follow the helix
 			if (x <= fp && ang ) { 
+				jumps-> Fill(jump);
 				if (fDebug) cout <<"The TF binds with the DNA" << endl;
 				if (fPosition == fPositionOperator || fPosition == fPositionOperator2) {
 					if (fDebug) cout << "specific binding of the TF on its binding site after hopping"<< endl;
@@ -251,6 +261,7 @@ int TFactor::Search(TRandom* poi, Data& p){
 	unsigned int i=0;
 	double r;
 	double c;
+
 	while (b != 2 && b!=5 && i < fIterazioni){
 		switch(b){
 
@@ -277,13 +288,87 @@ int TFactor::Search(TRandom* poi, Data& p){
 		}
 		i++;
 	}
-	if (b == 2)	return fM; 		
+	if (b == 2) {
+		return fM; 	
+
+
+		}
 	else {
-		if (fDebug) cout << "The loop ended befor the TFactor reached its binding site " << endl;
+		if (fDebug) cout << "The loop ended before the TFactor reached its binding site " << endl;
 		return 0;
 		} 
+
+	
+
 }	
 
+
+double * TFactor::Searches(double distanza, int searches, long int maxsearches, TRandom* punta, Data& p){
+
+	ChangeDistanza(distanza);
+	int j, l; 
+	long int i;
+	long double sum = 0;
+	double M[searches];
+	for (i = 0, j = 0; i < maxsearches && j < searches; i++){
+		
+		SetPositionOperator(punta);
+		
+		int c = Search(punta, p); 
+
+
+		if(c!=0) {
+			sum += c;
+			M[j] = c;
+			j++;
+
+		}
+
+		
+	}
+
+	ReturnJumpHist(distanza); //uncomment these lines to show and then reset the histograms with hopping jumps length that lead to associations to DNA
+	ResetJumpHist();
+	
+	cout << "Number of searches with binding to the site: " << j << endl;
+	if (j < searches) cout << "maxsearches is too small" << endl;
+	double Mean = sum/j;
+	printf( "Average value of macroscopic dissociations with distance %3.f between operators: ", distanza);
+	cout << Mean << endl; 
+
+	double variance = 0;
+	
+	for ( i = 0; i < j; i ++){
+		variance += pow((M[i] - Mean),2)/(j -1); 
+	}
+	variance = TMath::Sqrt(variance/j); 
+
+
+	double *arr = new double[2]; 
+	arr[0] =  Mean;
+	arr[1] = variance;
+	return arr;
+	delete []arr;
+
+
+}
+
+
+
+void TFactor::ResetJumpHist(){
+
+	jumps-> Reset();
+}
+
+
+void TFactor::ReturnJumpHist(double distance){
+
+	char *tito = new char[1000];
+	sprintf(tito,"Total hopping jump lengths for an operator distance of %3.f", distance);
+	new TCanvas(tito,tito);
+	jumps -> DrawCopy();
+	delete []tito;
+}
 
 void TFactor::ChangeTolleranza(double tolleranza) {
 	fTolleranza = tolleranza;

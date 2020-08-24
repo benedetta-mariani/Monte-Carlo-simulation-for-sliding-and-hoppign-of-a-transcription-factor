@@ -8,7 +8,7 @@
 
 ClassImp(Data)
 
-Data::Data(double rmin, double rstep, double rmax): TObject(),
+Data::Data(double rmin, double rstart, double rmax): TObject(),
 	fflag(0),
 	fflag2(0),
 	fDebug(0.),
@@ -17,9 +17,10 @@ Data::Data(double rmin, double rstep, double rmax): TObject(),
 	fnamelength2(10),
 	ftitlelength2(200),
 	frmin(rmin),
-	frstep(rstep),
+	frstart(rstart),
 	frmax(rmax)	
 {
+	frstep = frstart - frmin;
 	fnrange=int((frmax - frmin)/frstep) + 1;
 	fcontainer = new vector <int> [fnrange];
 	fnome = new char[fnamelength];
@@ -41,6 +42,7 @@ Data::Data(const Data &source): TObject(source),
   	frmin(source.frmin),
   	frstep(source.frstep),
 	frmax(source.frmax),
+	frstart(source.frstart),
 	fnrange(source.fnrange),
 	fnamelength2(source.fnamelength2),
 	ftitlelength2(source.ftitlelength2)
