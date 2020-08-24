@@ -29,7 +29,7 @@ void simulation(int searches, unsigned int seed = 123) {
 	const double s2 = 700;
 	const double rmin = 5.5; 
     const double rstart = 6.5;
-    const double rmax = 20;
+    const double rmax = 11;
     
 	int l; 
 
