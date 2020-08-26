@@ -348,9 +348,7 @@ double * TFactor::Searches(double distanza, int searches, long int maxsearches, 
 	arr[0] =  Mean;
 	arr[1] = variance;
 	return arr;
-	delete []arr;
-
-
+	
 }
 
 
